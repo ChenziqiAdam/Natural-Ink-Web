@@ -1,6 +1,6 @@
-# Natural Ink web
+# Natural Ink Web
 
-[简体中文](README.zh-CN.md)
+[简体中文](README.zh-CN.md) | Inspired by [Natural Ink](https://github.com/LambertAlpha/natural-ink)
 
 A static handwriting workbench for Chinese, English, Markdown, and a LaTeX formula subset. Paste text or review text extracted from a PDF, adjust page density, and download a vector PDF. Documents stay on the device.
 

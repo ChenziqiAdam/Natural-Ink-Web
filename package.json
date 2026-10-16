@@ -1,0 +1,29 @@
+{
+  "name": "natural-ink-web",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "assets": "node scripts/prepare-assets.mjs",
+    "dev": "npm run assets && vite --host 127.0.0.1",
+    "build": "npm run assets && tsc --noEmit && vite build",
+    "test": "npm run assets && tsc --outDir .test-build && node --test tests/*.mjs",
+    "preview": "vite preview --host 127.0.0.1",
+    "format": "prettier --write src tests scripts index.html vite.config.ts tsconfig.json package.json",
+    "format:check": "prettier --check src tests scripts index.html vite.config.ts tsconfig.json package.json",
+    "fonts:pack": "node scripts/pack-fonts.mjs"
+  },
+  "devDependencies": {
+    "prettier": "^3.9.10",
+    "typescript": "~5.9.0",
+    "vite": "^7.1.0"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "dependencies": {
+    "marked": "^17.0.6",
+    "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^6.4.299"
+  }
+}

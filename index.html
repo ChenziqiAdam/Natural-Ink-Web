@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Natural Ink: a local handwriting rendering workbench with real Caveat alternates and hand-drawn math."
+    />
+    <script>
+      try {
+        document.documentElement.dataset.theme =
+          localStorage.getItem("natural-ink-theme") === "dark"
+            ? "dark"
+            : "light";
+      } catch {
+        /* Storage may be disabled. The default theme is light. */
+      }
+    </script>
+    <meta name="theme-color" content="#f5f5f0" />
+    <title>Natural Ink · Handwriting workbench</title>
+  </head>
+  <body>
+    <div id="app">
+      <header class="topbar">
+        <a class="brand" href="./"
+          ><span class="brand-mark" aria-hidden="true">n<span>i</span></span
+          >natural ink<span class="edition">v1.0</span></a
+        >
+        <span class="local"><i></i> Files stay on your device</span>
+        <div class="preferences">
+          <label for="language" class="sr-only">Interface language</label>
+          <select id="language" aria-label="Interface language">
+            <option value="en">English</option>
+            <option value="zh">中文</option>
+          </select>
+          <button
+            aria-label="Toggle dark mode"
+            id="theme"
+            class="secondary"
+            type="button"
+            aria-pressed="false"
+          >
+            Dark mode
+          </button>
+        </div>
+        <a
+          href="https://github.com/LambertAlpha/natural-ink"
+          target="_blank"
+          rel="noreferrer"
+          class="source-link"
+          >Source ↗</a
+        >
+      </header>
+      <main>
+        <section class="intro">
+          <div>
+            <p class="eyebrow">THE HANDWRITING WORKBENCH</p>
+            <h1>A little variation.<br /><em>A readable page.</em></h1>
+          </div>
+          <p class="intro-note">
+            Paste your words. Add a little mathematics.<br />Watch them become
+            handwriting,<br />then take the whole document as a PDF.
+          </p>
+        </section>
+        <section class="workbench" aria-label="Handwriting editor">
+          <aside class="controls">
+            <div class="panel-heading">
+              <h2>Start with your words</h2>
+              <span class="step">01 / WRITE</span>
+            </div>
+            <div class="input-toolbar">
+              <label for="format" class="sr-only">Input format</label
+              ><select id="format">
+                <option value="markdown">Markdown + math</option>
+                <option value="latex">LaTeX formula</option>
+                <option value="plain">Plain text</option></select
+              ><button id="reset" class="text-button">Load example</button
+              ><button id="chinese-example" class="text-button" type="button">
+                Chinese example</button
+              ><button id="import-pdf" class="secondary" type="button">
+                ↑ PDF text</button
+              ><input
+                id="pdf-file"
+                type="file"
+                accept=".pdf,application/pdf"
+                hidden
+              />
+            </div>
+            <label for="document" class="sr-only">Document text</label>
+            <textarea
+              id="document"
+              spellcheck="false"
+              placeholder="Paste Markdown or write a few words…"
+            ></textarea>
+            <div class="input-caption">
+              <span id="source-count">0 / 12,000</span><span>Auto preview</span>
+            </div>
+            <details class="syntax-help">
+              <summary>Syntax help · Markdown &amp; LaTeX</summary>
+              <div class="syntax-body">
+                <p>
+                  <code># Heading</code> · paragraphs · <code>- lists</code> ·
+                  <code>&gt; quotes</code> · <code>**bold**</code> ·
+                  <code>*italic*</code>
+                </p>
+                <p>
+                  Inline math: <code>$E = mc^2$</code> or <code>\(x_1\)</code
+                  ><br />Display math: <code>$$\frac{a+b}{2}$$</code> or
+                  <code>\[...\]</code>
+                </p>
+                <p>
+                  Formulas: fractions, superscripts/subscripts, square roots,
+                  sums, integrals, Greek letters, arrows, common operators and
+                  <code>\mathbb{R}</code>/<code>\mathbb{E}</code>. Use
+                  <code>\text{...}</code> for words in math.
+                </p>
+                <p>
+                  LaTeX formula mode accepts one bare formula. This is a
+                  supported subset, not a full TeX compiler. Tables, images,
+                  HTML, custom macros and environments are not supported. Links
+                  keep their labels; code stays in the handwriting style.
+                  Chinese uses a gently varied WenKai-derived handwriting face,
+                  loaded only when needed.
+                </p>
+              </div>
+            </details>
+            <div class="document-options">
+              <label for="paper"
+                >Paper<select id="paper">
+                  <option value="a4">A4</option>
+                  <option value="letter">US Letter</option>
+                </select></label
+              ><label for="font-size"
+                >Text size (pt)<input
+                  id="font-size"
+                  type="number"
+                  min="6"
+                  max="32"
+                  step="0.5"
+                  value="18" /></label
+              ><label for="grid"
+                >Background<select id="grid">
+                  <option value="grid">Soft grid</option>
+                  <option value="plain">Plain paper</option>
+                </select></label
+              >
+            </div>
+            <details class="layout-settings" open>
+              <summary>Page layout · margins &amp; spacing</summary>
+              <div class="layout-preset">
+                <label for="layout-preset">Density preset</label
+                ><select id="layout-preset">
+                  <option value="comfortable">Comfortable</option>
+                  <option value="compact">Compact reference sheet</option>
+                  <option value="custom">Custom</option>
+                </select>
+              </div>
+              <p class="hint">
+                All margins and column gaps below are in millimetres. Small
+                settings pack more text; formula height is still reserved.
+              </p>
+              <div class="margin-grid">
+                <label
+                  >Top (mm)<input
+                    id="padding-top"
+                    type="number"
+                    min="0"
+                    max="35"
+                    step="0.5"
+                    value="16.9" /></label
+                ><label
+                  >Right (mm)<input
+                    id="padding-right"
+                    type="number"
+                    min="0"
+                    max="35"
+                    step="0.5"
+                    value="16.9" /></label
+                ><label
+                  >Bottom (mm)<input
+                    id="padding-bottom"
+                    type="number"
+                    min="0"
+                    max="35"
+                    step="0.5"
+                    value="16.9" /></label
+                ><label
+                  >Left (mm)<input
+                    id="padding-left"
+                    type="number"
+                    min="0"
+                    max="35"
+                    step="0.5"
+                    value="16.9"
+                /></label>
+              </div>
+              <div class="margin-grid">
+                <label
+                  >Line height (×)<input
+                    id="line-height"
+                    type="number"
+                    min="1"
+                    max="3"
+                    step="0.05"
+                    value="1.6" /></label
+                ><label
+                  >Paragraph gap (pt)<input
+                    id="paragraph-gap"
+                    type="number"
+                    min="0"
+                    max="50"
+                    step="0.5"
+                    value="11" /></label
+                ><label
+                  >Columns<select id="columns">
+                    <option value="1">1 column</option>
+                    <option value="2">2 columns</option>
+                    <option value="3">3 columns</option>
+                  </select></label
+                ><label
+                  >Column gap (mm)<input
+                    id="column-gap"
+                    type="number"
+                    min="0"
+                    max="25"
+                    step="0.5"
+                    value="6.4"
+                /></label>
+              </div>
+            </details>
+            <div class="setting">
+              <label for="variation"
+                >Body variation
+                <output id="variation-value">0.40</output></label
+              ><input
+                id="variation"
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                value="0.4"
+              />
+              <div class="range-labels">
+                <span>Subtle</span><span>Expressive</span>
+              </div>
+            </div>
+            <details class="advanced">
+              <summary>Advanced · seed &amp; positioned layout</summary>
+              <div class="seed-row">
+                <label for="seed"
+                  >Seed<input
+                    id="seed"
+                    type="number"
+                    step="1"
+                    value="183" /></label
+                ><button
+                  id="shuffle"
+                  class="secondary"
+                  aria-label="Choose a new random seed"
+                >
+                  ↻ New seed
+                </button>
+              </div>
+              <p class="hint">
+                Same seed, same letterforms. Math keeps its own natural
+                variation.
+              </p>
+              <p id="layout-mode" class="hint" hidden>
+                Positioned layout mode. Edit the text above to return to
+                automatic layout.
+              </p>
+              <div class="file-actions">
+                <button id="import" class="secondary">↑ Import JSON</button
+                ><button id="legacy-demo" class="text-button">
+                  Original demo</button
+                ><input
+                  id="file"
+                  type="file"
+                  accept=".json,application/json"
+                  hidden
+                />
+              </div>
+              <label for="json">Positioned layout JSON</label
+              ><textarea id="json" spellcheck="false"></textarea
+              ><button id="apply" class="secondary">Apply layout</button
+              ><button id="save-json" class="text-button">↓ Layout JSON</button>
+            </details>
+            <div class="panel-footer">
+              <span class="small-dot"></span> Everything is processed on this
+              device
+            </div>
+          </aside>
+          <div class="preview-panel">
+            <div class="preview-toolbar">
+              <div>
+                <span class="step">02 / PREVIEW</span
+                ><span id="dimensions"></span>
+              </div>
+              <div class="page-navigation">
+                <button id="prev" disabled aria-label="Previous preview page">
+                  ←</button
+                ><span id="page-number">Page 1 / 1</span
+                ><button id="next" disabled aria-label="Next preview page">
+                  →
+                </button>
+              </div>
+              <button
+                id="save-pdf-top"
+                class="primary compact"
+                aria-label="Download all pages as PDF"
+                disabled
+              >
+                ↓ PDF
+              </button>
+            </div>
+            <div id="preview" class="paper-stage" aria-busy="true"></div>
+            <div class="preview-bottom">
+              <p id="status" role="status" aria-live="polite">
+                Preparing font outlines…
+              </p>
+              <span>VECTOR PREVIEW</span>
+            </div>
+            <p id="error" role="alert" hidden></p>
+            <div class="export-bar">
+              <div>
+                <h2>Made to keep.</h2>
+                <p>Download every page as a crisp, vector PDF.</p>
+              </div>
+              <div class="export-actions">
+                <button id="save-svg" class="secondary" disabled>
+                  ↓ Page SVG</button
+                ><button id="save-pdf" class="primary" disabled>
+                  ↓ Download PDF
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+        <footer>
+          <p>Natural by design. Reproducible by seed.</p>
+          <p>
+            Caveat ·
+            <a id="license" href="./assets/OFL.txt">SIL Open Font License</a> ·
+            <a href="./assets/NOTICE.md">Attribution</a> ·
+            <a href="./assets/THIRD_PARTY.md">Web libraries</a> ·
+            <a href="./assets/cjk/OFL.txt">Chinese font license</a>
+          </p>
+        </footer>
+        <p class="scope-note">
+          Chinese &amp; English handwriting, adjustable page density, and local
+          PDF text import. Scans and outline-only PDFs need OCR; images, tables
+          and equation structure are not reconstructed. Goodnotes export remains
+          experimental in the Python CLI.
+        </p>
+      </main>
+    </div>
+    <dialog id="pdf-dialog" aria-labelledby="pdf-title">
+      <div class="pdf-dialog-heading">
+        <div>
+          <p class="eyebrow">LOCAL PDF IMPORT</p>
+          <h2 id="pdf-title">Review extracted text</h2>
+        </div>
+        <button id="pdf-cancel" class="secondary" type="button">Cancel</button>
+      </div>
+      <p id="pdf-status" role="status" aria-live="polite">Reading PDF…</p>
+      <p id="pdf-error" role="alert" hidden></p>
+      <label for="reading-order"
+        >Reading order (rebuilds the text preview)</label
+      ><select id="reading-order">
+        <option value="auto">Auto detect columns</option>
+        <option value="rows">Rows, top to bottom</option>
+        <option value="columns">Two columns, left then right</option>
+      </select>
+      <ul id="pdf-warnings"></ul>
+      <label for="pdf-text">Extracted text · edit before importing</label
+      ><textarea id="pdf-text" spellcheck="false" readonly></textarea>
+      <div class="input-caption">
+        <span id="pdf-count">0 / 12,000</span
+        ><span>Original document stays unchanged until you use this text</span>
+      </div>
+      <label id="skip-pages-label" hidden
+        ><input id="skip-pages" type="checkbox" /> Import only extracted text;
+        skip the listed pages without a text layer.</label
+      >
+      <div class="pdf-dialog-footer">
+        <p>
+          Processed on this device. Text will be reflowed in Plain text mode.
+        </p>
+        <button id="pdf-use" class="primary" type="button" disabled>
+          Use this text
+        </button>
+      </div>
+    </dialog>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

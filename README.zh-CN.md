@@ -1,6 +1,6 @@
-# Natural Ink web
+# Natural Ink Web
 
-[English](README.md)
+[English](README.md) 
 
 可独立部署到 GitHub Pages 的手写排版工具。支持中英文手写、Markdown／部分 LaTeX 公式、PDF 文本提取、紧凑分栏排版和矢量 PDF／SVG 下载。默认英文，支持中英文界面和明暗主题切换。
 
